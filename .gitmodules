@@ -1,3 +1,24 @@
 [submodule "dependencies/zed-ros2-wrapper"]
 	path = dependencies/zed-ros2-wrapper
 	url = https://github.com/stereolabs/zed-ros2-wrapper.git
+[submodule "dependencies/xacro"]
+	path = dependencies/xacro
+	url = https://github.com/ros/xacro
+[submodule "dependencies/diagnostics"]
+	path = dependencies/diagnostics
+	url = https://github.com/ros/diagnostics
+[submodule "dependencies/ament_lint"]
+	path = dependencies/ament_lint
+	url = https://github.com/ament/ament_lint
+[submodule "dependencies/robot_localization"]
+	path = dependencies/robot_localization
+	url = https://github.com/cra-ros-pkg/robot_localization
+[submodule "dependencies/geographic_info"]
+	path = dependencies/geographic_info
+	url = https://github.com/ros-geographic-info/geographic_info
+[submodule "dependencies/nmea_msgs"]
+	path = dependencies/nmea_msgs
+	url = https://github.com/ros-drivers/nmea_msgs.git
+[submodule "dependencies/angles"]
+	path = dependencies/angles
+	url = https://github.com/ros/angles.git
