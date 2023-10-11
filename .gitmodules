@@ -22,3 +22,6 @@
 [submodule "dependencies/angles"]
 	path = dependencies/angles
 	url = https://github.com/ros/angles.git
+[submodule "dependencies/joystick_drivers"]
+	path = dependencies/joystick_drivers
+	url = https://github.com/ros-drivers/joystick_drivers.git
