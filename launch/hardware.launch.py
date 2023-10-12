@@ -7,13 +7,25 @@ from ament_index_python.packages import get_package_share_directory
 def generate_launch_description():
     ld = LaunchDescription()
     
+    ### Add nodes to launch file
     joy_node = Node(
             package='joy',
             namespace='joy',
             executable='joy_node',
             name='joy_node'
         )
+    
+    tracking_node = Node(
+            package='hardware',
+            executable='T265',
+            name='T265',
+            parameters=[
+                {"hz": 30},
+                {"serial_number": "12345"}
+            ]
+        )
 
+    ### Include launch files from other packages e.g. zed_wrapper
     zed_launch_file = IncludeLaunchDescription(
         PythonLaunchDescriptionSource([get_package_share_directory("zed_wrapper"), "/launch/include/zed_camera.launch.py"]),
 
@@ -24,5 +36,6 @@ def generate_launch_description():
 
     ld.add_action(joy_node)
     ld.add_action(zed_launch_file)
+    ld.add_action(tracking_node)
     
     return ld 
