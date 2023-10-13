@@ -35,7 +35,7 @@ class MotorSubscriber(Node):
         super().__init__('motor_subscriber')
         self.init_settings()
         self.init_CAN_network()
-        self.init_motor_controllers()
+        self.initialize_sdo_objects(self.eds_path)
         self.startup_motors()
         self.init_subscription()
 
@@ -53,7 +53,7 @@ class MotorSubscriber(Node):
         self.target_position = [0] * len(self.motor_ids)
 
         # EDS path
-        self.eds_path = 'src/controller/config/C5-E-2-09.eds'
+        self.eds_path = 'install/hardware/share/hardware/config/C5-E-2-09.eds'
 
     def init_CAN_network(self):
         try:
@@ -62,16 +62,7 @@ class MotorSubscriber(Node):
             GPIO.setmode(GPIO.BOARD)
         except Exception as e:
             self.get_logger().error(f"Failed to initialize CAN network: {e}")
-    
-    def init_motor_controllers(self):
-        eds_path = 'install/hardware/share/hardware/config/C5-E-2-09.eds'
 
-
-        try:
-            #controller_utils.autosetup(ID_hall)  # Auto-setup for the linear motors
-            self.initialize_sdo_objects(eds_path)
-        except Exception as e:
-            self.get_logger().error(f"Failed to initialize motor controllers: {e}")
 
     def initialize_sdo_objects(self, eds_path):
         '''Initialize SDO objects for the motor controllers'''
@@ -108,20 +99,20 @@ class MotorSubscriber(Node):
         for motor_id in (motor_id - 1 for motor_id in self.motor_ids if motor_id < 7):
             try:
                 # Set velocity mode
-                self.sdo_objects['modes_of_operation'][motor_id].phys = 0x02
-
+                #self.sdo_objects['modes_of_operation'][motor_id].phys = 0x02
+                self.nodes[motor_id].sdo['Modes of operation'].phys = 0x02
                 # Set acceleration
                 self.nodes[motor_id].sdo['vl velocity acceleration']['DeltaSpeed'].phys = 3500  # TODO - Document what this is
                 self.nodes[motor_id].sdo['vl velocity acceleration']['DeltaTime'].phys = 2      # TODO - Document what this is
 
                 # Set deceleration
                 self.nodes[motor_id].sdo['vl velocity deceleration']['DeltaSpeed'].phys = 3500  # TODO - Document what this is
-                self.nodes[motor_id].sdo['0x60A9'][0x02].phys = 2     # TODO - Document what this is
-
+                self.nodes[motor_id].sdo[0x6049][0x02].phys = 2     # TODO - Document what this is
                 # Max speed
-                self.node.sdo['vl velocity min max amount']['MaxAmount'].phys = 1500             # TODO - Document what this is
-                self.node.sdo['SI unit velocity'].raw   = 0x00B44700            # TODO - Document what this is
+                self.nodes[motor_id].sdo['vl velocity min max amount']['MaxAmount'].phys = 1500             # TODO - Document what this is
+                self.nodes[motor_id].sdo['SI unit velocity'].raw   = 0x00B44700            # TODO - Document what this is
 
+                self.get_logger().info(f'Setup settings for motor {motor_id}')     
             except Exception as e:
                 self.get_logger().error(f"1: Failed to start up motor {motor_id}: {e}")
         
@@ -129,8 +120,8 @@ class MotorSubscriber(Node):
         for motor_id in (motor_id - 1 for motor_id in self.motor_ids if motor_id > 6):
             try:
                 # Set Position mode
-                self.sdo_objects['modes_of_operation'][motor_id].phys = 0x01
-
+                #self.sdo_objects['modes_of_operation'][motor_id].phys = 0x01
+                self.nodes[motor_id].sdo['Modes of operation'].phys = 0x01
                 # Initialize 
                 self.target_position[motor_id] = self.nodes[motor_id].sdo[0x607A]
                 
@@ -144,25 +135,25 @@ class MotorSubscriber(Node):
                 self.nodes[motor_id].sdo['Gear ratio']['Motor revolutions'].phys = 62
                 self.nodes[motor_id].sdo['Gear ratio']['Shaft revolutions'].phys = 1
 
-            
+                self.get_logger().info(f'Setup settings for motor {motor_id}')      
             except Exception as e:
                 self.get_logger().error(f"2: Failed to start up motor {motor_id}: {e}")
 
         for motor_id in (motor_id - 1 for motor_id in self.motor_ids):
-            
-            try:
-                self.sdo_objects['control_words'][motor_id].phys = 0x0006
-                if self.sdo_objects['status_words'][motor_id].bits[5] == 1 \
-                     and self.sdo_objects['status_words'][motor_id].bits[9] == 1:
-                    self.sdo_objects['control_words'][motor_id].phys = 0x0007
-                    if self.sdo_objects['status_words'][motor_id].bits[1] == 1 \
-                            and self.sdo_objects['status_words'][motor_id].bits[4] == 1 \
-                            and self.sdo_objects['status_words'][motor_id].bits[5] == 1 \
-                            and self.sdo_objects['status_words'][motor_id].bits[9] == 1:
-                            self.sdo_objects['control_words'][motor_id].phys = 0x000F
-                        
-            except Exception as e:
-                self.get_logger().error(f"3: Failed to start up motor {motor_id}: {e}")
+                self.nodes[motor_id].sdo['Controlword'].phys = 0x0006
+                if self.nodes[motor_id].sdo['Statusword'].bits[5] == 1 \
+                     and self.nodes[motor_id].sdo['Statusword'].bits[9] == 1:
+                    self.nodes[motor_id].sdo['Controlword'].phys = 0x0007
+                    if self.nodes[motor_id].sdo['Statusword'].bits[1] == 1 \
+                            and self.nodes[motor_id].sdo['Statusword'].bits[4] == 1 \
+                            and self.nodes[motor_id].sdo['Statusword'].bits[5] == 1 \
+                            and self.nodes[motor_id].sdo['Statusword'].bits[9] == 1:
+                            self.nodes[motor_id].sdo['Controlword'].phys = 0x000F
+                            self.get_logger().info(f'tried starting {motor_id}')     
+                    else:
+                        self.get_logger().info('2: failed to start motors')
+                else:
+                    self.get_logger().info('1: failed to start motors')                        
 
     def init_subscription(self):
         self.subscription = self.create_subscription(
