@@ -6,8 +6,6 @@ import rclpy
 import canopen
 
 from rclpy.node import Node
-from rover_msgs.msg import MotorCommands
-import controller_utils
 from geometry_msgs.msg import Twist
 
 
@@ -66,7 +64,7 @@ class MotorSubscriber(Node):
             self.get_logger().error(f"Failed to initialize CAN network: {e}")
     
     def init_motor_controllers(self):
-        eds_path = 'src/controller/config/C5-E-2-09.eds'
+        eds_path = 'install/hardware/share/hardware/config/C5-E-2-09.eds'
 
 
         try:
@@ -125,7 +123,7 @@ class MotorSubscriber(Node):
                 self.node.sdo['SI unit velocity'].raw   = 0x00B44700            # TODO - Document what this is
 
             except Exception as e:
-                self.get_logger().error(f"Failed to start up motor {motor_id}: {e}")
+                self.get_logger().error(f"1: Failed to start up motor {motor_id}: {e}")
         
         # Set up steering motors settings
         for motor_id in (motor_id - 1 for motor_id in self.motor_ids if motor_id > 6):
@@ -148,9 +146,9 @@ class MotorSubscriber(Node):
 
             
             except Exception as e:
-                self.get_logger().error(f"Failed to start up motor {motor_id}: {e}")
+                self.get_logger().error(f"2: Failed to start up motor {motor_id}: {e}")
 
-        for motor_id in self.motor_ids:
+        for motor_id in (motor_id - 1 for motor_id in self.motor_ids):
             
             try:
                 self.sdo_objects['control_words'][motor_id].phys = 0x0006
@@ -164,7 +162,7 @@ class MotorSubscriber(Node):
                             self.sdo_objects['control_words'][motor_id].phys = 0x000F
                         
             except Exception as e:
-                self.get_logger().error(f"Failed to start up motor {motor_id}: {e}")
+                self.get_logger().error(f"3: Failed to start up motor {motor_id}: {e}")
 
     def init_subscription(self):
         self.subscription = self.create_subscription(
@@ -178,7 +176,7 @@ class MotorSubscriber(Node):
         steering_scale = 1000
         velocity_scale = 315
         try:
-            steering_angle, motor_velocities = controller_utils.ackermann(msg.linear.x, msg.angular.z)
+            #sdf
 
             for motor, idx in enumerate(self.steer_motor_ids):
                 self.control[motor].bits[4] = 0 
