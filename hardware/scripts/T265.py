@@ -18,7 +18,7 @@ class RealSenseTracking(Node):
         super().__init__("T265")
         ## Specify Parameters
         self.declare_parameter("hz", 30)
-        self.declare_parameter("serial_number", "12345")
+        self.declare_parameter("serial_number", "224622111375")
 
         ## Initialize Variables
         hz = self.get_parameter("hz").value
