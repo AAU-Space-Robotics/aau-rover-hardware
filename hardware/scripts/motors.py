@@ -226,8 +226,8 @@ class MotorSubscriber(Node):
     def shutdown_motors(self):
         '''Shutdown the motors'''
         try:
-            for node_id in network:
-                node = network[node_id]
+            for node_id in self.network:
+                node = self.network[node_id]
                 node['Controlword'] = 0
             # for motor in self.motor_ids:
             #     self.control[motor].phys = 0
