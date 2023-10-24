@@ -48,6 +48,8 @@ class AckermannNode(Node):
             return [0] * 6, [lin_vel] * 6
 
         R = lin_vel / ang_vel
+        if R < 0.8:
+            R = 0.8
 
         # Different turning radii for the different wheels
         R_ML = R - d_lr / 2
@@ -66,7 +68,7 @@ class AckermannNode(Node):
         theta_RR = math.atan2(L, R_RR)
 
         # Array of steering angles, adjusted for direction and turning direction
-        steering_angles = np.array([theta_FL, theta_FR, theta_ML, theta_MR, -theta_RL, -theta_RR]) * direction * turn_direction
+        steering_angles = np.array([theta_FL, theta_FR, theta_ML, theta_MR, -theta_RL, -theta_RR]) * turn_direction
 
         # Wheel velocities
         V_FL = ang_vel * R_FL
@@ -79,7 +81,7 @@ class AckermannNode(Node):
         # Array of wheel velocities, adjusted for direction
         wheel_velocities = np.array([V_FL, V_FR, V_ML, V_MR, V_RL, V_RR]) * direction
 
-    return steering_angles, wheel_velocities
+        return steering_angles, wheel_velocities
 def main(args=None):
     rclpy.init(args=args)
 
