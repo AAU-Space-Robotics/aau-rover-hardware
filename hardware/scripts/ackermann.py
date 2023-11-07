@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 import rclpy
 from rclpy.node import Node
 from geometry_msgs.msg import Twist
@@ -22,13 +24,19 @@ class AckermannNode(Node):
             '/motor_commands',
             10)
 
+        self.get_logger().info("Ackermann node started successfully")
+
     def listener_callback(self, msg):
         linear_vel = msg.linear.x
         angular_vel = msg.angular.z
 
         # Your Ackermann function here, assume it returns steering_angles and wheel_velocities
         steering_angles, wheel_velocities = self.ackermann_steering(linear_vel, angular_vel)
+        #self.get_logger().info("Steering angles: " + str(steering_angles))
 
+        # Convert from numpy arrays to lists
+        steering_angles = [float(angle) for angle in steering_angles]
+        wheel_velocities = [float(vel) for vel in wheel_velocities]
         # Create and publish the message
         motor_commands = Float64MultiArray()
         motor_commands.data = steering_angles + wheel_velocities
@@ -82,6 +90,7 @@ class AckermannNode(Node):
         wheel_velocities = np.array([V_FL, V_FR, V_ML, V_MR, V_RL, V_RR]) * direction
 
         return steering_angles, wheel_velocities
+    
 def main(args=None):
     rclpy.init(args=args)
 

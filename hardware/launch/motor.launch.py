@@ -14,7 +14,28 @@ def generate_launch_description():
             name='motors'
         )
 
+    ackermann_node = Node(
+            package='hardware',
+            executable='ackermann.py',
+            name='ackermann'
+        )
 
+    joy_node = Node(
+            package='joy',
+            namespace='joy',
+            executable='joy_node',
+            name='joy_node'
+        )
+    
+    joy_to_vel_node = Node(
+            package='hardware',
+            executable='joy_to_cmd_vel.py',
+            name='joy_to_vel_converter'
+        )
+    
+    ld.add_action(ackermann_node)
+    ld.add_action(joy_node)
+    ld.add_action(joy_to_vel_node)
     ld.add_action(motor_node)
     
     return ld 

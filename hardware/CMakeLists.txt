@@ -24,6 +24,8 @@ install(TARGETS
 install(PROGRAMS
   scripts/T265.py
   scripts/motors.py
+  scripts/ackermann.py
+  scripts/joy_to_cmd_vel.py
   DESTINATION lib/${PROJECT_NAME})
 
 # Install Python launch files
