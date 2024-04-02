@@ -19,13 +19,6 @@ def generate_launch_description():
             executable='ackermann.py',
             name='ackermann'
         )
-
-    joy_node = Node(
-            package='joy',
-            namespace='joy',
-            executable='joy_node',
-            name='joy_node'
-        )
     
     joy_to_vel_node = Node(
             package='hardware',
