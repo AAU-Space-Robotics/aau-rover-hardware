@@ -39,7 +39,7 @@ class AckermannNode(Node):
         wheel_velocities = [float(vel) for vel in wheel_velocities]
         # Create and publish the message
         motor_commands = Float64MultiArray()
-        motor_commands.data = steering_angles + wheel_velocities
+        motor_commands.data = wheel_velocities + steering_angles
         self.publisher_.publish(motor_commands)
 
     def ackermann_steering(self, lin_vel, ang_vel, L=0.849, d_lr=0.894, d_fr=0.77):
@@ -76,7 +76,7 @@ class AckermannNode(Node):
         theta_RR = math.atan2(L, R_RR)
 
         # Array of steering angles, adjusted for direction and turning direction
-        steering_angles = np.array([theta_FL, theta_FR, theta_ML, theta_MR, -theta_RL, -theta_RR]) * turn_direction
+        steering_angles = np.array([theta_FL, theta_FR, -theta_RL, -theta_RR]) * turn_direction
 
         # Wheel velocities
         V_FL = ang_vel * R_FL
