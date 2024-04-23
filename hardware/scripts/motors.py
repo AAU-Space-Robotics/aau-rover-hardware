@@ -207,7 +207,7 @@ class MotorSubscriber(Node):
                     node.sdo['vl target velocity'].phys = motor_commands[idx] * velocity_scale
                 else:
                     node.sdo['Controlword'].bits[4] = 0
-                    node.sdo[0x607A] = motor_commands[idx] * steering_scale
+                    node.sdo[0x607A].phys = motor_commands[idx] * steering_scale
                     node.sdo['Controlword'].bits[5] = 1
                     node.sdo['Controlword'].bits[4] = 1
 
