@@ -43,6 +43,7 @@ class AckermannNode(Node):
         self.publisher_.publish(motor_commands)
 
     def ackermann_steering(self, lin_vel, ang_vel, L=0.849, d_lr=0.894, d_fr=0.77):
+        offset=-0.0135
         # Checking the direction of the linear and angular velocities
         direction = -1 if lin_vel < 0 else 1
         turn_direction = -1 if ang_vel < 0 else 1
@@ -60,31 +61,31 @@ class AckermannNode(Node):
             R = 0.8
 
         # Different turning radii for the different wheels
-        R_ML = R - d_lr / 2
-        R_MR = R + d_lr / 2
-        R_FR = R + d_fr / 2
-        R_FL = R - d_fr / 2
-        R_RR = R + d_fr / 2
-        R_RL = R - d_fr / 2
+        R_ML = R - (d_lr / 2) * turn_direction
+        R_MR = R + (d_lr / 2) * turn_direction
+        R_FR = R + (d_fr / 2) * turn_direction
+        R_FL = R - (d_fr / 2) * turn_direction
+        R_RR = R + (d_fr / 2) * turn_direction
+        R_RL = R - (d_fr / 2) * turn_direction
 
         # Steering angles
-        theta_FL = math.atan2(L, R_FL)
-        theta_FR = math.atan2(L, R_FR)
+        theta_FL = math.atan2((L/2)-offset, R_FL)
+        theta_FR = math.atan2((L/2)-offset, R_FR)
         theta_ML = 0  # middle wheels don't steer
         theta_MR = 0  # middle wheels don't steer
-        theta_RL = math.atan2(L, R_RL)
-        theta_RR = math.atan2(L, R_RR)
+        theta_RL = math.atan2((L/2)+offset, R_RL)
+        theta_RR = math.atan2((L/2)+offset, R_RR)
 
         # Array of steering angles, adjusted for direction and turning direction
         steering_angles = np.array([theta_FL, theta_FR, -theta_RL, -theta_RR]) * turn_direction
 
         # Wheel velocities
-        V_FL = ang_vel * R_FL
-        V_FR = ang_vel * R_FR
-        V_ML = ang_vel * R_ML
-        V_MR = ang_vel * R_MR
-        V_RL = ang_vel * R_RL
-        V_RR = ang_vel * R_RR
+        V_FL = (ang_vel * R_FL) * direction
+        V_FR = (ang_vel * R_FR) * direction
+        V_ML = (ang_vel * R_ML) * direction
+        V_MR = (ang_vel * R_MR) * direction
+        V_RL = (ang_vel * R_RL) * direction
+        V_RR = (ang_vel * R_RR) * direction
 
         # Array of wheel velocities, adjusted for direction
         wheel_velocities = np.array([V_FL, V_FR, V_ML, V_MR, V_RL, V_RR]) * direction
