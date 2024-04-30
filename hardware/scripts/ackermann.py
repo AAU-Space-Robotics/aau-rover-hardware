@@ -81,11 +81,11 @@ class AckermannNode(Node):
 
         # Wheel velocities
         V_FL = (ang_vel * R_FL) * direction
-        V_FR = (ang_vel * R_FR) * direction
+        V_FR = -(ang_vel * R_FR) * direction
         V_ML = (ang_vel * R_ML) * direction
-        V_MR = (ang_vel * R_MR) * direction
+        V_MR = -(ang_vel * R_MR) * direction
         V_RL = (ang_vel * R_RL) * direction
-        V_RR = (ang_vel * R_RR) * direction
+        V_RR = -(ang_vel * R_RR) * direction
 
         # Array of wheel velocities, adjusted for direction
         wheel_velocities = np.array([V_FL, V_FR, V_ML, V_MR, V_RL, V_RR]) * direction
