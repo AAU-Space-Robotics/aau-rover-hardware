@@ -69,12 +69,12 @@ class AckermannNode(Node):
         R_RL = R - (d_fr / 2) * turn_direction
 
         # Steering angles
-        theta_FL = math.atan2((L/2)-offset, R_FL)
-        theta_FR = math.atan2((L/2)-offset, R_FR)
+        theta_FL = math.atan2((L/2)-offset, R_FL) * turn_direction
+        theta_FR = math.atan2((L/2)-offset, R_FR) * turn_direction
         theta_ML = 0  # middle wheels don't steer
         theta_MR = 0  # middle wheels don't steer
-        theta_RL = math.atan2((L/2)+offset, R_RL)
-        theta_RR = math.atan2((L/2)+offset, R_RR)
+        theta_RL = math.atan2((L/2)+offset, R_RL) * -turn_direction
+        theta_RR = math.atan2((L/2)+offset, R_RR) * -turn_direction
 
         # Array of steering angles, adjusted for direction and turning direction
         steering_angles = np.array([theta_FL, theta_FR, -theta_RL, -theta_RR]) * turn_direction
