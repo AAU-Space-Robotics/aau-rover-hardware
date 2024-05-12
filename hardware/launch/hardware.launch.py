@@ -26,6 +26,5 @@ def generate_launch_description():
 
     ld.add_action(joy_node)
     ld.add_action(zed_launch_file)
-    ld.add_action(tracking_node)
     
     return ld 
