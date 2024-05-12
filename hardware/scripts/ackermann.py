@@ -84,10 +84,10 @@ class AckermannNode(Node):
         theta_MR = 0  # middle wheels don't steer
         theta_RL = np.where(turning_radius < minimum_radius,
                             -np.pi/4,
-                            np.arctan2((L/2)+offset, R_RL) * -turn_direction)
+                            np.arctan2((L/2)+offset, R_RL) * turn_direction)
         theta_RR = np.where(turning_radius < minimum_radius,
                             -np.pi/4,
-                            np.arctan2((L/2)+offset, R_RR) * -turn_direction)
+                            np.arctan2((L/2)+offset, R_RR) * turn_direction)
     
         # Array of steering angles, adjusted for direction and turning direction
         steering_angles = np.array([theta_FL, theta_FR, -theta_RL, -theta_RR]) * turn_direction
