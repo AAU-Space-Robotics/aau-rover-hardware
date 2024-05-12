@@ -95,20 +95,20 @@ class AckermannNode(Node):
         # Wheel velocities
         V_FL = np.where(turning_radius < minimum_radius,
                         -(ang_vel)*turn_direction,
-                        np.where(ang_vel == 0, lin_vel, (R_FL * ang_vel)) * direction)
+                        np.where(ang_vel == 0, lin_vel, -(R_FL * ang_vel)) * direction)
         # (ang_vel * R_FL) * direction
         V_FR = np.where(turning_radius < minimum_radius,
                         -(ang_vel)*turn_direction,
                         np.where(ang_vel == 0, lin_vel, -(R_FR * ang_vel)) * direction)
         V_ML = np.where(turning_radius < minimum_radius,
                         -(ang_vel)*turn_direction,
-                        np.where(ang_vel == 0, lin_vel, (R_ML * ang_vel)) * direction)
+                        np.where(ang_vel == 0, lin_vel, -(R_ML * ang_vel)) * direction)
         V_MR = np.where(turning_radius < minimum_radius,
                         -(ang_vel)*turn_direction,
                         np.where(ang_vel == 0, lin_vel, -(R_MR * ang_vel)) * direction)
         V_RL = np.where(turning_radius < minimum_radius,
                         -(ang_vel)*turn_direction,
-                        np.where(ang_vel == 0, lin_vel, (R_RL * ang_vel)) * direction)
+                        np.where(ang_vel == 0, lin_vel, -(R_RL * ang_vel)) * direction)
         V_RR = np.where(turning_radius < minimum_radius,
                         -(ang_vel)*turn_direction,
                         np.where(ang_vel == 0, lin_vel, -(R_RR * ang_vel)) * direction)
