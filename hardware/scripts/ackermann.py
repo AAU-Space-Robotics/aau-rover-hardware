@@ -78,12 +78,12 @@ class AckermannNode(Node):
                             np.arctan2((L/2)-offset, R_FL) * turn_direction)
         # math.atan2((L/2)-offset, R_FL) * turn_direction
         theta_FR = np.where(turning_radius < minimum_radius,
-                            -np.pi/4,
+                            np.pi/4,
                             np.arctan2((L/2)-offset, R_FR) * turn_direction)
         theta_ML = 0  # middle wheels don't steer
         theta_MR = 0  # middle wheels don't steer
         theta_RL = np.where(turning_radius < minimum_radius,
-                            -np.pi/4,
+                            np.pi/4,
                             np.arctan2((L/2)+offset, R_RL) * -turn_direction)
         theta_RR = np.where(turning_radius < minimum_radius,
                             -np.pi/4,
