@@ -90,7 +90,7 @@ class AckermannNode(Node):
                             np.arctan2((L/2)+offset, R_RR) * -turn_direction)
     
         # Array of steering angles, adjusted for direction and turning direction
-        steering_angles = np.array([theta_FL, theta_FR, theta_RL, theta_RR]) * turn_direction
+        steering_angles = np.array([theta_FL, theta_FR, theta_RL, theta_RR])
     
         # Wheel velocities
         V_FL = np.where(turning_radius < minimum_radius,
