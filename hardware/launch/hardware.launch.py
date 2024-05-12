@@ -15,16 +15,6 @@ def generate_launch_description():
             name='joy_node'
         )
     
-    tracking_node = Node(
-            package='hardware',
-            executable='T265',
-            name='T265',
-            parameters=[
-                {"hz": 30},
-                {"serial_number": "12345"}
-            ]
-        )
-
     ### Include launch files from other packages e.g. zed_wrapper
     zed_launch_file = IncludeLaunchDescription(
         PythonLaunchDescriptionSource([get_package_share_directory("zed_wrapper"), "/launch/include/zed_camera.launch.py"]),
