@@ -4,13 +4,13 @@ from launch.actions import IncludeLaunchDescription
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from ament_index_python.packages import get_package_share_directory
 
+
 def generate_launch_description():
     ld = LaunchDescription()
-    
-    
+
     zed_top = IncludeLaunchDescription(
         PythonLaunchDescriptionSource([
-            FindPackageShare('zed_wrapper'), '/launch/zed_camera.launch.py'
+            FindPackageShare('zed_wrapper'), '/launch/zed2i.launch.py'
         ]),
         launch_arguments={
             'camera_model': 'zed2i',
@@ -22,7 +22,7 @@ def generate_launch_description():
 
     zed_tracking = IncludeLaunchDescription(
         PythonLaunchDescriptionSource([
-            FindPackageShare('zed_wrapper'), '/launch/zed_camera.launch.py'
+            FindPackageShare('zed_wrapper'), '/launch/zed2i.launch.py'
         ]),
         launch_arguments={
             'camera_model': 'zed2i',
@@ -31,14 +31,14 @@ def generate_launch_description():
             'node_name': 'tracking'
         }.items()
     )
-    
-    return LaunchDescription([
-        zed_launch_file
-    ])
 
-
+    camera_pose = Node(
+        package='hardware',
+        executable='pose_transform.py',
+        name='camera_pose',
+    )
 
     ld.add_action(zed_top)
     ld.add_action(zed_tracking)
-    
-    return ld 
+
+    return ld
