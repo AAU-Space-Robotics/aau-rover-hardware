@@ -8,17 +8,37 @@ def generate_launch_description():
     ld = LaunchDescription()
     
     
-    tracking_node = Node(
-            package='hardware',
-            executable='T265.py',
-            name='T265',
-            parameters=[
-                {"hz": 30},
-                {"serial_number": "224622111375"}
-            ]
-        )
+    zed_top = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource([
+            FindPackageShare('zed_wrapper'), '/launch/zed_camera.launch.py'
+        ]),
+        launch_arguments={
+            'camera_model': 'zed2i',
+            'serial_number': '37915676',
+            'zed_id': '0',
+            'node_name': 'top_camera'
+        }.items()
+    )
+
+    zed_tracking = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource([
+            FindPackageShare('zed_wrapper'), '/launch/zed_camera.launch.py'
+        ]),
+        launch_arguments={
+            'camera_model': 'zed2i',
+            'serial_number': '35803121',
+            'zed_id': '1',
+            'node_name': 'tracking'
+        }.items()
+    )
+    
+    return LaunchDescription([
+        zed_launch_file
+    ])
 
 
-    ld.add_action(tracking_node)
+
+    ld.add_action(zed_top)
+    ld.add_action(zed_tracking)
     
     return ld 
