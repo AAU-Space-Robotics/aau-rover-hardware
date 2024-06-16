@@ -22,8 +22,10 @@ install(TARGETS
 
 # Install python nodes
 install(PROGRAMS
-  scripts/T265.py
+  scripts/pose_transform.py
   scripts/motors.py
+  scripts/ackermann.py
+  scripts/joy_to_cmd_vel.py
   DESTINATION lib/${PROJECT_NAME})
 
 # Install Python launch files

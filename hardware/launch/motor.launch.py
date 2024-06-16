@@ -14,7 +14,14 @@ def generate_launch_description():
             name='motors'
         )
 
-
+    ackermann_node = Node(
+            package='hardware',
+            executable='ackermann.py',
+            name='ackermann'
+        )
+    
+    
+    ld.add_action(ackermann_node)
     ld.add_action(motor_node)
     
     return ld 
