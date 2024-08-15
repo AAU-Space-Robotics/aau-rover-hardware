@@ -41,5 +41,5 @@ def generate_launch_description():
 
     ld.add_action(zed_top)
     ld.add_action(zed_tracking)
-
+    #ld.add_action(camera_pose)
     return ld

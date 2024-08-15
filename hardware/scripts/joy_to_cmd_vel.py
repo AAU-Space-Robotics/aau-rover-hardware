@@ -65,7 +65,7 @@ class JoyToVelNode(Node):
         elif x != 0:
             new_y = np.sign(x)* (y / x) * math.sqrt(x**2 + y**2)
 
-        return new_x, new_y
+        return new_x*4, new_y*4
 
 def main(args=None):
     # Initialize the rclpy library
