@@ -60,6 +60,9 @@ class MotorSubscriber(Node):
         self.startup_motors()
         self.startup_motors2()
 
+        # Register shutdown callback
+        rclpy.get_default_context().on_shutdown(self.on_shutdown)
+
     def init_settings(self):
         # Max linear and angular velocities
         self.max_linear_vel = 2000
@@ -89,7 +92,7 @@ class MotorSubscriber(Node):
                 node.sdo[0x6049][0x01].phys = 3500
                 node.sdo[0x6049][0x02].phys = 2 
 
-                node.sdo[0x6046][0x02].phys = 1500             # TODO - Document what this is
+                node.sdo[0x6046][0x02].phys = 1500             # TODO - Document what this is min max speed
                 node.sdo[0x60A9].raw   = 0x00B44700
 
                 
@@ -111,15 +114,19 @@ class MotorSubscriber(Node):
     def startup_motors2(self):
         for node_id in self.network:
             node = self.network[node_id]
-            node.sdo['Controlword'].phys = 0x0006
+            node.sdo['Controlword'].phys = 0x0006 # 0110, 
+            self.get_logger().info('Set Controlword to 0x0006')
             if node.sdo['Statusword'].bits[0] == 1 and node.sdo['Statusword'].bits[5] == 1 and node.sdo['Statusword'].bits[9] == 1:
-                node.sdo['Controlword'].phys = 0x0007
+                node.sdo['Controlword'].phys = 0x0007 # 0111 
+                self.get_logger().info('Set Controlword to 0x0007')
                 if node.sdo['Statusword'].bits[0] == 1 and node.sdo['Statusword'].bits[1] == 1 and node.sdo['Statusword'].bits[4] == 1 and node.sdo['Statusword'].bits[5] == 1 and node.sdo['Statusword'].bits[9]:
-                    node.sdo['Controlword'].phys = 0x000F
+                    # bit0: SO (Switched On), bit1: EV (Enable Voltage), bit2: QS (Quick Stop), bit3: EO (Enable Operation)
+                    node.sdo['Controlword'].phys = 0x000F # 1111 
+                    self.get_logger().info('Set Controlword to 0x000F')
                 else:
-                    self.get_logger().info('I did not do it')
+                    self.get_logger().info('Failed to set Controlword to 0x000F')
             else:
-                self.get_logger().info('I did not do it')
+                self.get_logger().info('Failed to set Controlword to 0x0007')
             
         # for motor_id in (motor_id - 1 for motor_id in self.motor_ids if motor_id < 7):
         #     try:
@@ -226,20 +233,30 @@ class MotorSubscriber(Node):
     def shutdown_motors(self):
         '''Shutdown the motors'''
         try:
+            self.get_logger().info('Shutting down motors2')
             for node_id in self.network:
                 node = self.network[node_id]
-                node['Controlword'] = 0
+                node['Controlword'].phys = 0x0000
             # for motor in self.motor_ids:
             #     self.control[motor].phys = 0
+            self.get_logger().info('Motors shutdown successfully')
         except Exception as e:
             self.get_logger().error(f"Failed to shutdown motors: {e}")
+
+    def on_shutdown(self):
+        '''Callback function for shutdown'''
+        self.get_logger().info('Shutting down motors')
+        self.shutdown_motors()
+        self.network.disconnect()
+        #GPIO.cleanup()
 
 def kinematics(linear_vel, angular_vel):
     # Your kinematics logic here...
     # This is a placeholder for now
-    pass
+    pass    
 
 if __name__ == "__main__":
     rclpy.init()
     motor_subscriber_node = MotorSubscriber()
     rclpy.spin(motor_subscriber_node)
+ 

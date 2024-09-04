@@ -31,6 +31,8 @@ class JoyToVelNode(Node):
 
     def listener_callback(self, msg):
 
+        ### Convert the joystick input to linear and angular velocities ###
+        
         linear_vel = msg.axes[1] # Left stick up/down
         angular_vel = msg.axes[0] # Left stick left/right
 
@@ -43,6 +45,14 @@ class JoyToVelNode(Node):
         twist.angular.z = angular_vel
 
         self.publisher_.publish(twist)
+
+        # If Y button is pressed, stop the robot
+        # TODO - Implement a service that stop the robot over can bus
+        
+        # if msg.buttons[3] == 1:
+        #     twist.linear.x = 0
+        #     twist.angular.z = 0
+        #     self.publisher_.publish(twist)
 
     def circle_to_square(self, x, y):
         # Ensure the point (x, y) lies within the unit circle

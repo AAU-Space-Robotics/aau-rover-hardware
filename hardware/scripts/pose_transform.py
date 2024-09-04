@@ -20,14 +20,14 @@ class PoseNode(Node):
         self.pose_data: np.ndarray = None
 
         timer_period = 0.2   # seconds (5Hz)
-        self.timer = self.create_timer(timer_period, self.pose_callback)
+        self.timer = self.create_timer(timer_period, self.pose_publisher_callback)
 
         self.get_logger().info("Inference node started successfully")
 
     def pose_callback(self, msg: Pose):
         # Temp handling of transform
 
-        def create_transformation_matrix(self, x, y, theta):
+        def create_transformation_matrix(x, y, theta):
             # Define the rotation matrix
             c, s = np.cos(theta), np.sin(theta)
             R = np.array([[c, -s, 0],
@@ -42,7 +42,7 @@ class PoseNode(Node):
             # Combine into full transformation matrix
             return np.dot(T, R)
 
-        def quaternion_to_euler(self, x, y, z, w):
+        def quaternion_to_euler(x, y, z, w):
             # Convert a quaternion into euler angles (yaw, pitch, roll)
             t0 = +2.0 * (w * x + y * z)
             t1 = +1.0 - 2.0 * (x * x + y * y)
@@ -69,13 +69,14 @@ class PoseNode(Node):
 
         angles = quaternion_to_euler(ox, oy, oz, ow)
         T = create_transformation_matrix(px, py, angles[2])
-        point_in_camera_coords = np.array([[0.3], [0.0], [1.0]])
+        point_in_camera_coords = np.array([[-0.3], [0.0], [1.0]])
         transformed_point = np.dot(T, point_in_camera_coords)
+        self.get_logger().info(f"Transformed point: {transformed_point}")
 
         self.pose_data = np.array(
-            [transformed_point[0], transformed_point[1], transformed_point[2], ow, ox, oy, oz])
+            [transformed_point[0].item(), transformed_point[1].item(), transformed_point[2].item(), ow, ox, oy, oz])
 
-    def pose_callback(self):
+    def pose_publisher_callback(self):
 
         if self.pose_data is None:
             self.get_logger().warn("Pose data is not ready")
