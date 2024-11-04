@@ -26,7 +26,7 @@ class AckermannNode(Node):
         
         # Timer and timestamp
         self.last_message_time = self.get_clock().now()
-        self.timer = self.create_timer(0.1, self.check_timeout)
+        # self.timer = self.create_timer(0.1, self.check_timeout)
         
         self.get_logger().info("Ackermann node started successfully")
 
