@@ -1,2 +1,5 @@
 .vscode/settings.json
 *.pyc
+build/
+log/
+install/
